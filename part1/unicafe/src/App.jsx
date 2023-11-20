@@ -15,13 +15,18 @@ The state of the application should remain in the App root component.*/
 const Statistics = ({name, parts}) => {
   return(
     <div>
-      <h1>{name}</h1>
+  
+    <h1>{name}</h1>
+    <table>
+      <tbody>
       <StatisticLine name = {parts[0].name} value = {parts[0].count} />
       <StatisticLine name = {parts[1].name} value = {parts[1].count} />
       <StatisticLine name = {parts[2].name} value = {parts[2].count} />
       <StatisticLine name = {parts[3].name} value = {parts[3].count} />
-      <StatisticLine name = "average" value = {(parts[0].count - parts[2].count) / parts[3].count} />
-      <StatisticLine name = "positive" value = {parts[0].count / parts[3].count} />
+      <StatisticLine name = "average" value = {Math.round(((parts[0].count - parts[2].count) / parts[3].count + Number.EPSILON) * 10) / 10} />
+      <StatisticLine name = "positive" value = {(parts[0].count / parts[3].count) * 100} />
+      </tbody>
+    </table>
     </div>
   )
 }
@@ -29,10 +34,18 @@ const Statistics = ({name, parts}) => {
 /*StatisticLine for displaying a single statistic, e.g. the average score.*/
 const StatisticLine = ({name, value}) => {
   if (name === 'positive') {
-    return <p>{name} {value} %</p>
+    return (
+      <tr>
+        <td>{name}</td>
+        <td>{value} %</td>
+      </tr>
+    )
   }
   return (
-    <p>{name} {value}</p>
+    <tr>
+      <td>{name}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
