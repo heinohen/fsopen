@@ -3,11 +3,7 @@ import { useState } from 'react'
 
 const HOnes = props => <h1>{props.text}</h1> 
 
-const Display = ({ name, count }) => {
-  return (
-    <p>{name} {count}</p>
-  )
-}
+
 
 const Button = ({handleClick, text}) => {
   return (
@@ -15,13 +11,33 @@ const Button = ({handleClick, text}) => {
   )
 }
 
-const Average = (props) => {
-  const sa = props.value
-  const av = 'average'
-  return (
+const Statistics = ({name, parts}) => {
+  return(
     <div>
-      {av} {(sa[0].count + sa[1].count + sa[2].count) / sa[3].count}
+      <h1>{name}</h1>
+      <p>{parts[0].name} {parts[0].count}</p>
+      <p>{parts[1].name} {parts[1].count}</p>
+      <p>{parts[2].name} {parts[2].count}</p>
+      <p>{parts[3].name} {parts[3].count}</p>
+      <p>average {(parts[0].count - parts[2].count) / parts[3].count}</p>
+      <p>positive {parts[0].count / parts[3].count} %</p>
     </div>
+  )
+}
+
+const History = (props) => {
+  const sa = props.handleHistory
+  if (sa.parts[3].count === 0) {
+    return (
+      <div>
+        <h1>{sa.name}</h1>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
+
+  return (
+    <Statistics name = {sa.name} parts = {sa.parts} />
   )
 }
 
@@ -36,13 +52,18 @@ function App() {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const [total, setTotal] = useState(0)
+  const [avg, setAvg] = useState(0)
 
-  const sArray = [
-    {name: 'good', count: good},
-    {name: 'neutral', count: neutral},
-    {name: 'bad', count: bad},
-    {name: 'total', count: total}
-  ]
+  
+  const sArray = {
+    name: 'statistics',
+    parts: [
+      {name: 'good', count: good},
+      {name: 'neutral', count: neutral},
+      {name: 'bad', count: bad},
+      {name: 'total', count: total}
+    ]
+  }
 
 
   const handleGoodClick = () =>{ 
@@ -71,12 +92,10 @@ function App() {
     <Button handleClick={handleGoodClick} text = 'good'/>
     <Button handleClick={handleNeutralClick} text = 'neutral'/>
     <Button handleClick={handleBadClick} text = 'bad'/>
-    <HOnes text = {stats} />
-    <Display name= {sArray[0].name} count = {sArray[0].count}/>
-    <Display name= {sArray[1].name} count = {sArray[1].count}/>
-    <Display name= {sArray[2].name} count = {sArray[2].count}/>
-    <Display name= {sArray[3].name} count = {sArray[3].count}/>
-    <Average value = {sArray}/>
+    <History handleHistory = {sArray} />
+    
+
+    
     </div>
   )
 }
