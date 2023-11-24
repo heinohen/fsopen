@@ -1,16 +1,16 @@
 
 
-/*importataan useState */
-import { useState } from 'react'
-
+/*importataan useState ja useEffect*/
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import Note from './components/Note'
 
 
-const App = (props) => {
+const App = () => {
   /* määritellään komponentille tila, joka saa
   aluksi arvokseen propsina välitettvän muistiinpanot
   alustavan taulukon */
-  const [notes, setNotes] = useState(props.notes)
+  const [notes, setNotes] = useState([])
   
   /* kontrolloitu komponentti */
   const [newNote, setNewNote] = useState(
@@ -20,6 +20,16 @@ const App = (props) => {
   /* näytetäänkö kaikki vai tärkeät */
   const [showAll, setShowAll] = useState(true)
   
+  /* notet 'json servulta' promisella */
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        setNotes(response.data)
+      })
+  }, [])
+  console.log('render', notes.length, 'notes')
+
 
   const handleNoteChange = (event) => {
     console.log(event.target.value)

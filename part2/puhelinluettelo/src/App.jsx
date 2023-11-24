@@ -1,26 +1,33 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PersonList from './components/PersonList'
 import Search from './components/Search'
 import PersonForm from './components/PersonForm'
+import axios from 'axios'
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [showFiltered, setFiltered] = useState(persons)
+
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log(response)
+        setFiltered(response.data)
+        setPersons(response.data)
+      })
+  }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: persons.length +1
     }
     /* use old java "-1" trick, could not do it any different... */
     if (persons.findIndex(person => person.name === newName) > -1) {
