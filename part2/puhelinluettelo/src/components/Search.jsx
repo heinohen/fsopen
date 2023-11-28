@@ -1,6 +1,7 @@
-const Search = ( { handleChange }) => {
+const Search = ( { value, handleChange }) => {
     return (
         <input
+        value = {value}
         onChange={handleChange}
         />
     )

@@ -2,90 +2,148 @@ import { useEffect, useState } from 'react'
 import PersonList from './components/PersonList'
 import Search from './components/Search'
 import PersonForm from './components/PersonForm'
-import axios from 'axios'
+import personService from './services/persons'
+import './index.css'
+import Notification from './components/Notification'
 
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [showFiltered, setFiltered] = useState(persons)
+  const [showFiltered, setFiltered] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorOrSuccess, setErrorOrSuccess] = useState('')
 
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log(response)
-        setFiltered(response.data)
-        setPersons(response.data)
-      })
+    personService
+      .getAll()
+      .then(initialPersons => {
+      setPersons(initialPersons)
+    })
   }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
-    const personObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length +1
+
+// Tällä hetkellä luetteloon lisättäviä uusia numeroita ei synkronoida palvelimelle.
+//  Korjaa tilanne.
+// &&
+// Muuta toiminnallisuutta siten, että jos jo olemassa olevalle henkilölle lisätään numero, korvaa lisätty numero aiemman numeron.
+// Korvaaminen kannattaa tehdä HTTP PUT ‑pyynnöllä.
+// Jos henkilön tiedot löytyvät jo luettelosta, voi ohjelma kysyä käyttäjältä varmistuksen:
+
+// Filteröidään olemassa olevaa nimilistaa jos löytyy matchi (lowercase to lowercase)
+    let matchedName = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase());
+
+    if (matchedName.length !== 0) {
+// lista ei ole tyhjä joten samalla nimellä (ehkä eri kirjoitusasulla) löytyy
+      
+      console.log("found match: " + '\n', matchedName[0], '\n', "asking to replace...")
+// kysytään korvataanko numero
+      if (window.confirm(`Found number with name: ${matchedName[0].name}, replace the name with a new one ? `)) {
+        console.log('----> yes')
+// luodaan uusi olio spreadilla (nimi ja id tulee sieltä) ja asetetaan samalla numeroksi newNumber
+        const toBeAdded = {
+          ...matchedName[0],
+          number: newNumber }
+
+          console.log('replacing <----')
+// kutsutaan axionin updatea
+        personService
+          .update(toBeAdded.id, toBeAdded)
+// palautuksen tultua ilmoitetaan siitä
+          .then(returnedPerson => {
+            console.log(`success <---- ${returnedPerson.name} updated number from ${matchedName[0].number} to ${returnedPerson.number}`)
+// asetetaan nimilistaan map komennolla joko alkuperäinen person tai sitten kun kohdataan id match päivitetään tiedot
+            setPersons(persons.map(person => person.id !== toBeAdded.id ? person : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setNotificationMessage(
+              `Person '${returnedPerson.name}' was successfully updated on server`
+              )
+              setErrorOrSuccess(false)
+              setTimeout(() => {
+                setNotificationMessage(null)
+                setErrorOrSuccess(null)
+            }, 5000)
+          })
+      }
+
+      else {console.log('----> no')}
+
     }
-    /* use old java "-1" trick, could not do it any different... */
-    if (persons.findIndex(person => person.name === newName) > -1) {
-      /* JS template literal used (same as python fstring)*/
-      window.alert(`${newName} is already added to phonebook`)
-    }
+// jos ei matchia löytynyt ja listan pituus on siis 0, lisätään uusi henkilö listaan normaalisti
+// luodaan uusi olio ja kutsutaan axionin createa personServicen kautta
     else {
-      /*put it in persons */
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
-      setFiltered(persons.concat(personObject))
-    }
-    
-  }
-  /**
-   * 
-   * @param {} partOfString part of name to search
-   */
-  const searchForNames = (partOfString) => {
-    const filteredArray = persons.filter(person => person.name
-      .toLowerCase()
-      .includes(partOfString.toLowerCase()))
-    setFiltered(filteredArray)
-  }
-  /**
-   * 
-   * @param {*} event handler for an search event
-   */
-  const handleSearch = (event) => {
-    searchForNames(event.target.value)
+          const personObject = {
+            name: newName,
+            number: newNumber
+          }
+            personService
+              .create(personObject)
+              .then(returnedPerson => {
+                setPersons(persons.concat(returnedPerson))
+                setNewName('')
+                setNewNumber('')
+                setNotificationMessage(
+                  `Person '${returnedPerson.name}' was successfully added to server`
+                  )
+                  setErrorOrSuccess(false)
+                  setTimeout(() => {
+                    setNotificationMessage(null)
+                    setErrorOrSuccess(null)
+                }, 5000)
+            })
+      }
   }
 
-  /**
-   * 
-   * @param {*} event handler for name change
-   */
+  const handleSearch = (event) => {
+    setFiltered(event.target.value)
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
   
-  /**
-   * 
-   * @param {*} event handler for number change
-   */
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
+  }
+
+  const handleDeletePerson = (id) => {
+    /* pers is a filtered array so 0 is where we look*/
+    const pers = persons.filter(person => person.id === id)
+    console.log(`lets delete ${pers[0].name} with id ${pers[0].id}`)
+    /* prompts user with confirmation */
+
+// Tee ohjelmaan mahdollisuus yhteystietojen poistamiseen.
+// Poistaminen voi tapahtua esim. nimen yhteyteen liitetyllä napilla.
+// Poiston suorittaminen voidaan varmistaa käyttäjältä window.confirm-metodilla:
+    if (window.confirm('delete? <-----')) {
+      console.log('----> yes')
+      personService
+        .eliminate(pers[0].id)
+      console.log('success <------ ')
+      
+// Olemattoman muistiinpanon poistaminen tapahtuu siis metodilla filter,
+// joka muodostaa uuden taulukon, jonka sisällöksi tulee alkuperäisen taulukon sisällöstä ne alkiot,
+// joille parametrina oleva funktio palauttaa arvon true:
+      setPersons(persons.filter(person => person.id !== pers[0].id))
+    }
+    
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Search handleChange={handleSearch} />
+      <Notification message={notificationMessage} error={errorOrSuccess}/>
+      <Search value = {showFiltered} handleChange={handleSearch} />
       <h2>add a new</h2>
       <PersonForm submit = {addPerson} name = {newName} number = {newNumber} handleName = {handleNameChange} handleNumber = {handleNumberChange} />
       <h2>Numbers</h2>
       <div>
-      <PersonList persons = {showFiltered} />
+      <PersonList persons = {persons} showFiltered = {showFiltered} deleteThisPerson={handleDeletePerson} />
       </div>
     </div>
   )
