@@ -87,6 +87,8 @@ const App = () => {
                 setPersons(persons.concat(returnedPerson))
                 setNewName('')
                 setNewNumber('')
+// Toteuta osan 2 esimerkin parempi virheilmoitus tyyliin ruudulla muutaman sekunnin näkyvä ilmoitus,
+// joka kertoo onnistuneista operaatioista (henkilön lisäys ja poisto sekä numeron muutos)
                 setNotificationMessage(
                   `Person '${returnedPerson.name}' was successfully added to server`
                   )
@@ -112,32 +114,54 @@ const App = () => {
   }
 
   const handleDeletePerson = (id) => {
-    /* pers is a filtered array so 0 is where we look*/
     const pers = persons.filter(person => person.id === id)
     console.log(`lets delete ${pers[0].name} with id ${pers[0].id}`)
-    /* prompts user with confirmation */
-
 // Tee ohjelmaan mahdollisuus yhteystietojen poistamiseen.
 // Poistaminen voi tapahtua esim. nimen yhteyteen liitetyllä napilla.
 // Poiston suorittaminen voidaan varmistaa käyttäjältä window.confirm-metodilla:
-    if (window.confirm('delete? <-----')) {
+    if (window.confirm(`delete ${pers[0].name}? <-----`)) {
       console.log('----> yes')
       personService
         .eliminate(pers[0].id)
-      console.log('success <------ ')
-      
-// Olemattoman muistiinpanon poistaminen tapahtuu siis metodilla filter,
+        .then(() => {
+          setNotificationMessage(`Successfully deleted ${pers[0].name} from server!`)
+          setErrorOrSuccess(false)
+          setPersons(persons.filter(person => person.id !== pers[0].id))
+          console.log('success <------ ')
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setErrorOrSuccess(null)
+          }, 5000)
+        })
+// Avaa sovelluksesi kahteen selaimeen. Jos poistat jonkun henkilön selaimella 1
+// hieman ennen kuin yrität muuttaa henkilön numeroa selaimella 2, tapahtuu virhetilanne
+// Korjaa ongelma osan 2 esimerkin promise ja virheet hengessä ja siten,
+// että käyttäjälle ilmoitetaan operaation epäonnistumisesta.
+// Onnistuneen ja epäonnistuneen operaation ilmoitusten tulee erota toisistaan: 
+        .catch(error => {
+          setNotificationMessage(`Could not delete ${pers[0].name} from server!  \n 'Maybe it was already deleted ?`)
+          setErrorOrSuccess(true)
+// Olemattoman henkilön poistaminen tapahtuu siis metodilla filter,
 // joka muodostaa uuden taulukon, jonka sisällöksi tulee alkuperäisen taulukon sisällöstä ne alkiot,
 // joille parametrina oleva funktio palauttaa arvon true:
-      setPersons(persons.filter(person => person.id !== pers[0].id))
+          setPersons(persons.filter(person => person.id !== pers[0].id))
+          console.log(`failure <----- ${error.message}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setErrorOrSuccess(null)
+          }, 5000)
+        })
     }
-    
   }
 
+
+// Lisätty notification container, jottei sivu hypi ylös-alas kun notification tulee ruudulle
   return (
     <div>
       <h2>Phonebook</h2>
+      <div className='notification-container'>
       <Notification message={notificationMessage} error={errorOrSuccess}/>
+      </div>
       <Search value = {showFiltered} handleChange={handleSearch} />
       <h2>add a new</h2>
       <PersonForm submit = {addPerson} name = {newName} number = {newNumber} handleName = {handleNameChange} handleNumber = {handleNumberChange} />

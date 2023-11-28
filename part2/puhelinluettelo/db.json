@@ -1,11 +1,6 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-    },
-    {
       "name": "Ada Lovelace",
       "number": "040-1234563343434",
       "id": 2
@@ -14,16 +9,6 @@
       "name": "Dan abrah",
       "number": "092340920349",
       "id": 3
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "1337",
-      "id": 4
-    },
-    {
-      "name": "arton äiti",
-      "number": "666",
-      "id": 5
     }
   ]
 }

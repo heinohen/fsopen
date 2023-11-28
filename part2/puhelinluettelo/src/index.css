@@ -25,3 +25,7 @@ h2 {
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.notification-container {
+    height: 100px;
+}
