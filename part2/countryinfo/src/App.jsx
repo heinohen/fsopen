@@ -21,6 +21,10 @@ const App = () => {
     setFiltered(event.target.value)
   }
 
+  const handleShow = (name) => {
+    setFiltered(name)
+  }
+
 // Lisätty notification container, jottei sivu hypi ylös-alas kun notification tulee ruudulle
   return (
     <div>
@@ -28,7 +32,7 @@ const App = () => {
       <p>find countries: </p><Search value = {showFiltered} handleChange={handleSearch} />
       </div>
       <div>
-      <CountryList countries = {countries} showFiltered = {showFiltered} />
+      <CountryList countries = {countries} showFiltered = {showFiltered} tamanappi={handleShow} />
       </div>
     </div>
   )

@@ -1,43 +1,16 @@
+import CountryInfo from "./CountryInfo"
 
-const Country = ( { country }) => {
-    return (
-            <p>{country.name.common}</p>
-    )
-}
-//<td><button onClick={() => deleteThisPerson(person.id)}>delete</button></td>
-
-
-
-
-
-
-//pääkaupunki
-//pinta-ala
-//kielet - HUOM OBJEKTINA kun ei tiedetä attribuuttien nimiä tai määrää!
-const CountryInfo = ( { thisCountry } ) => {
-    console.log(thisCountry.area)
+const Country = ( { country, tamanappi }) => {
+    console.log('countries listed<------')
     return (
         <div>
-            <h2>{thisCountry.name.common}</h2>
-            <p>Capital: {thisCountry.capital}</p>
-            <p>Area: {thisCountry.area} km²</p>
-            <div>
-            <ul>
-                {Object.keys(thisCountry.languages).map((key) => (
-                    <li key={key}>{thisCountry.languages[key]}</li>
-                ))}
-                </ul>
-            </div>
-            <img src={thisCountry.flags.png} alt="flag-fin" />  
+            <p>{country.name.common}</p>
+            <button onClick={() => tamanappi(country.name.common)}>Show info</button>
         </div>
-    )
+    )   
 }
 
-
-
-
-
-const CountryList = ({ countries, showFiltered}) => {
+const CountryList = ({ countries, showFiltered, tamanappi}) => {
     const filteredCountries = countries.filter((country) =>
         country.name.common.toLowerCase()
         .includes(showFiltered.toLowerCase())
@@ -61,9 +34,8 @@ const CountryList = ({ countries, showFiltered}) => {
 
         return (
             <div>
-                <p>THIS IS CASE OF 1 -- 10</p>
                 {filteredCountries.map(country => 
-                    <Country key={country.name.common} country={country} />
+                    <Country key={country.name.ccn3} country={country} tamanappi={tamanappi} />
                 )}
         </div>
         )
