@@ -1,5 +1,8 @@
+import Weather from "./WeatherData"
+
 const CountryInfo = ( { thisCountry } ) => {
-    console.log(thisCountry)
+
+    // Maan kielet objecteina, koska ei tiedetä lukumäärää tai muuttujien tietoja
     return (
         <div>
             <h2>{thisCountry.name.common}</h2>
@@ -12,7 +15,12 @@ const CountryInfo = ( { thisCountry } ) => {
                 ))}
                 </ul>
             </div>
-            <img src={thisCountry.flags.png} alt="flag-fin" />  
+            <div className="flag-container">
+                <img src={thisCountry.flags.png} alt="flag-fin" />  
+            </div>
+            <div>
+                <Weather country = {thisCountry} />
+            </div>
         </div>
     )
 }

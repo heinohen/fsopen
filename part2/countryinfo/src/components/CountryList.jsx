@@ -3,14 +3,13 @@ import CountryInfo from "./CountryInfo"
 const Country = ( { country, tamanappi }) => {
     console.log('countries listed<------')
     return (
-        <div>
-            <p>{country.name.common}</p>
-            <button onClick={() => tamanappi(country.name.common)}>Show info</button>
+        <div className="row">
+            <p>{country.name.common}</p><button onClick={() => tamanappi(country.name.common)}>Show info</button>
         </div>
     )   
 }
 
-const CountryList = ({ countries, showFiltered, tamanappi}) => {
+const CountryList = ({ countries, showFiltered, tamanappi}) => {3
     const filteredCountries = countries.filter((country) =>
         country.name.common.toLowerCase()
         .includes(showFiltered.toLowerCase())
@@ -21,7 +20,7 @@ const CountryList = ({ countries, showFiltered, tamanappi}) => {
             <div>Start typing!</div>
         )
     }
-
+    // jos ei asetettuna mitään suodatinta, ei näytetä maita
     if (filteredCountries.length == countries.length) { return ( <div></div> )}
 
     else if (filteredCountries.length > 10) {
@@ -29,7 +28,7 @@ const CountryList = ({ countries, showFiltered, tamanappi}) => {
             <div>Too many hits!</div>
         )
     }
-
+    //
     else if (filteredCountries.length <= 10 && filteredCountries.length > 1) {
 
         return (

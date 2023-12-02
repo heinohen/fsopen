@@ -2,3 +2,29 @@ body {
   background-color: rgb(99, 104, 91);
   color: aliceblue;
 }
+
+.body-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.flag-container {
+  height: 70px;
+  width: 100px;
+}
+
+.flag-container > img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.row {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+button {
+  border-radius: 20px;
+}
