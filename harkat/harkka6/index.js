@@ -1,30 +1,14 @@
 
 // otetaan käyttöön express, joka on tällä kertaa funktio,
 // jota kutsumalla luodaan muuttujaan app sijoitettava Express-sovellusta vastaava olio
-
+const Note = require('./models/note')
 const express = require('express')
 const app = express()
+const cors = require('cors')
+app.use(cors())
 // Otetaan json-parseri käyttöön
 app.use(express.json())
 
-
-let notes = [
-    {
-    id: 1,
-    content: "HTML is easy",
-    important: true
-    },     
-    {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    important: false
-    },
-    {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true
-    }
-]
 
 // Määritellään sovellukselle kaksi routea:
 
@@ -43,7 +27,9 @@ app.get('/', (request,response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-    response.json(notes)
+    Note.find({}).then(n => {
+        response.json(n)
+    })
 })
 // Yksittäisen resurssin haku:
 // tehdään route,
@@ -117,7 +103,7 @@ app.post('/api/notes', (request, response) => {
 })
 
 // Palvelimen kuunneltava portti
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server is runnin' on port ${PORT}`)
 })
