@@ -1,6 +1,7 @@
 
 // otetaan käyttöön express, joka on tällä kertaa funktio,
 // jota kutsumalla luodaan muuttujaan app sijoitettava Express-sovellusta vastaava olio
+require('dotenv').config()
 const Note = require('./models/note')
 const express = require('express')
 const app = express()

@@ -16,34 +16,14 @@
       "important": true
     },
     {
-      "content": "a new note...",
+      "content": "Moi",
       "important": false,
       "id": 4
     },
     {
-      "content": "a new noawedte...",
+      "content": "taas uus viiesti",
       "important": true,
       "id": 5
-    },
-    {
-      "content": "a new noawedte...",
-      "important": false,
-      "id": 6
-    },
-    {
-      "content": "mitä vittua",
-      "important": false,
-      "id": 7
-    },
-    {
-      "content": "a new note...efef",
-      "important": false,
-      "id": 8
-    },
-    {
-      "content": "efaewf",
-      "important": false,
-      "id": 9
     }
   ]
 }

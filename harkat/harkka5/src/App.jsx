@@ -1,43 +1,15 @@
-
-
-/*importataan useState ja useEffect*/
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
-import noteService from './services/notes'
-import './index.css'
 import Notification from './components/Notification'
 import Footer from './components/Footer'
-
-
-
+import noteService from './services/notes'
 
 const App = () => {
-  /* määritellään komponentille tila, joka saa
-  aluksi arvokseen propsina välitettvän muistiinpanot
-  alustavan taulukon */
   const [notes, setNotes] = useState([])
-  
-  /* kontrolloitu komponentti */
-  const [newNote, setNewNote] = useState(
-    'a new note...'
-  )
-  const [errorMessage, setErrorMessage] = useState('')
-
-  /* näytetäänkö kaikki vai tärkeät */
+  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
-  
-  /* notet 'json servulta' promisella */
-  /*useEffect(() => {
-    axios
-      .get('http://localhost:3001/notes')
-      .then(response => {
-        setNotes(response.data)
-      })
-  }, [])
-  console.log('render', notes.length, 'notes')
-  */
+  const [errorMessage, setErrorMessage] = useState(null)
 
- /*käytetään tehtyä noteserviceä */
   useEffect(() => {
     noteService
       .getAll()
@@ -46,50 +18,29 @@ const App = () => {
       })
   }, [])
 
-
-  const handleNoteChange = (event) => {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
-  }
-
-  /* HTML form uuden muistiinpanon lisäystä */
   const addNote = (event) => {
     event.preventDefault()
     const noteObject = {
       content: newNote,
       important: Math.random() > 0.5,
-      id: notes.length + 1,
     }
+  
     noteService
       .create(noteObject)
-      .then(returnedNote => {
+        .then(returnedNote => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
-    // axios
-    //   .post('http://localhost:3001/notes', noteObject)
-    //   .then(response => {
-    //     setNotes(notes.concat(response.data))
-    //     setNewNote('')
-    //   })
   }
 
-  const notesToShow = showAll
-    ? notes
-    : notes.filter(note => note.important)
+  const toggleImportanceOf = id => {
+    const note = notes.find(n => n.id === id)
+    const changedNote = { ...note, important: !note.important }
   
-  const toggleImportanceOf = (id) => {
-    /* määrittelee jokaiselle muistiinpanolle id-kenttään perustuvan yksilöivän urlin*/
-    const url = `http://localhost:3001/notes/${id}`
-    /* taulukon find metodilla etsitään halutun id:n omaava note*/
-    const note = notes.find(n => n.id === id) 
-    /* tehdään kopio oliolle "...note", jolle asetetaan important kenttä päinvastaiseksi '!'*/
-    const changedNote = { ...note, important: !note.important} 
-
     noteService
       .update(id, changedNote)
-      .then(returnedNote => {
-        setNotes(notes.map(n => n.id !== id ? n : returnedNote))
+        .then(returnedNote => {
+        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
       .catch(error => {
         setErrorMessage(
@@ -98,41 +49,45 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
-      }) 
-  
+      })
   }
-  /*form*/
-  /* lomakkeen input-komponentille on nyt
-  rekisteröity tapahtumankäsittelijä
-  tilanteeseen onChange
-  */
+
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value)
+  }
+
+  const notesToShow = showAll
+    ? notes
+    : notes.filter(note => note.important)
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all'}
+          show {showAll ? 'important' : 'all' }
         </button>
-      </div>
+      </div>      
       <ul>
-        {notesToShow.map(note =>
+        {notesToShow.map(note => 
           <Note
-            key = {note.id}
-            note = {note}
-            toggleImportance={() => toggleImportanceOf(note.id)} />
+            key={note.id}
+            note={note}
+            toggleImportance={() => toggleImportanceOf(note.id)}
+          />
         )}
       </ul>
       <form onSubmit={addNote}>
-        <input
-          value = {newNote}
+      <input
+          value={newNote}
           onChange={handleNoteChange}
         />
-        <button type = 'submit'>save</button>
+        <button type="submit">save</button>
       </form>
       <Footer />
     </div>
   )
 }
+
 export default App
