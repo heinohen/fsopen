@@ -3,30 +3,31 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const logger = require('../utils/logger')
 
+// eslint-disable-next-line no-unused-vars
 blogRouter.get('/', (request, response, next) => {
 
-    Blog
-      .find({})
-      .then(blogs => {
-        response.json(blogs)
-      })
+  Blog
+    .find({})
+    .then(blogs => {
+      response.json(blogs)
+    })
 })
 
 blogRouter.post('/', (request, response, next) => {
   logger.info('täällä')
-    const body = request.body
+  const body = request.body
 
-    const blog = new Blog({
-        title: body.title,
-        author: body.author,
-        url: body.url,
-        likes: body.likes
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
+  })
+  blog.save()
+    .then(savedBlog => {
+      response.json(savedBlog)
     })
-    blog.save()
-      .then(savedBlog => {
-        response.json(savedBlog)
-      })
-      .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 module.exports = blogRouter
