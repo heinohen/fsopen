@@ -114,7 +114,62 @@ describe('Favourite blog', () => {
 
     expect(testSubject).toEqual(exp)
   })
+})
 
-}
+describe('Most blogs', () => {
+  test('of empty list is zero', () => {
+    expect(listHelper.mostBlogs([])).toBe(0)
+  })
 
-)
+  test('when list has only one blog equals the amount of that', () => {
+    const exp = {
+      author: 'Edsger W. Dijkstra',
+      blogs: 1
+    }
+
+    const testSubject = listHelper.mostBlogs(listWithOneBlog)
+
+    expect(testSubject).toEqual(exp)
+  })
+
+  test('of a bigger list is given back right object', () => {
+    const exp = {
+      author: 'Robert C. Martin',
+      blogs: 3
+    }
+
+    const testSubject = listHelper.mostBlogs(blogs)
+
+    expect(testSubject).toEqual(exp)
+  })
+})
+
+describe('Most likes', () => {
+  test('of empty list is zero', () => {
+    expect(listHelper.mostLikes([])).toBe(0)
+  })
+
+  test('when list has only one blog equals the amount of likes of that', () => {
+
+    const exp = {
+      author: 'Edsger W. Dijkstra',
+      likes: 5,
+    }
+
+    const testSubject = listHelper.mostLikes(listWithOneBlog)
+
+    expect(testSubject).toEqual(exp)
+  })
+
+  test('of a bigger list is given back right object', () => {
+    const exp = {
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    }
+
+    const testSubject = listHelper.mostLikes(blogs)
+
+    expect(testSubject).toEqual(exp)
+
+  })
+})
