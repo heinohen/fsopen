@@ -3,14 +3,9 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const logger = require('../utils/logger')
 
-// eslint-disable-next-line no-unused-vars
-blogRouter.get('/', (request, response, next) => {
-
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
+blogRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
 blogRouter.post('/', (request, response, next) => {
@@ -21,11 +16,11 @@ blogRouter.post('/', (request, response, next) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes ? body.likes : 0
   })
   blog.save()
     .then(savedBlog => {
-      response.json(savedBlog)
+      response.status(201).json(savedBlog)
     })
     .catch(error => next(error))
 })
