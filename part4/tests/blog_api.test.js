@@ -143,6 +143,64 @@ describe('API tests', () => {
       expect(titles).not.toContain(aValidBlog.title)
 
     })
+
+  })
+
+  describe('changing likes of a blog', () => {
+
+    test('like value increases by one', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const manipulatedBlog = blogsAtStart[0]
+      const manipulatedLikes = manipulatedBlog.likes += 1
+      manipulatedBlog.likes = manipulatedLikes
+
+      await api
+        .put(`/api/blogs/${manipulatedBlog.id}`)
+        .send(manipulatedBlog)
+        .expect(200)
+
+      const blogsAtTheEnd = await helper.blogsInDb()
+
+      const matchedBlog = blogsAtTheEnd.find(blog => blog.title === manipulatedBlog.title)
+      expect(matchedBlog.likes).toEqual(manipulatedBlog.likes)
+    })
+
+    test('like value decreases by one', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const manipulatedBlog = blogsAtStart[0]
+      const manipulatedLikes = manipulatedBlog.likes -= 1
+      manipulatedBlog.likes = manipulatedLikes
+
+      await api
+        .put(`/api/blogs/${manipulatedBlog.id}`)
+        .send(manipulatedBlog)
+        .expect(200)
+
+      const blogsAtTheEnd = await helper.blogsInDb()
+
+      const matchedBlog = blogsAtTheEnd.find(blog => blog.title === manipulatedBlog.title)
+      expect(matchedBlog.likes).toEqual(manipulatedBlog.likes)
+    })
+
+    test('like value cannot go below zero', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const manipulatedBlog = blogsAtStart[0]
+      const manipulatedLikes = -999999999
+      manipulatedBlog.likes = manipulatedLikes
+
+      await api
+        .put(`/api/blogs/${manipulatedBlog.id}`)
+        .send(manipulatedBlog)
+        .expect(200)
+
+      const blogsAtTheEnd = await helper.blogsInDb()
+
+      const matchedBlog = blogsAtTheEnd.find(blog => blog.title === manipulatedBlog.title)
+      expect(matchedBlog.likes).toEqual(0)
+    })
+
+
+
   })
 
 })
