@@ -95,9 +95,7 @@ describe('API tests', () => {
       expect(testBlog.likes).toBe(0)
     })
 
-    afterAll(async () => {
-      await mongoose.connection.close()
-    })
+
 
     test('blog without field \'title\' or \'url\' is not added', async () => {
       const newBlog = {
@@ -118,7 +116,7 @@ describe('API tests', () => {
 
   describe('removing a blog', () => {
     test('a blog with valid id can be deleted', async () => {
-      
+
       const aValidBlog = {
         title: 'a valid blog to be deleted',
         author: 'its-a-me maaario',
@@ -147,7 +145,8 @@ describe('API tests', () => {
     })
   })
 
+})
 
-
-
+afterAll(async () => {
+  await mongoose.connection.close()
 })
