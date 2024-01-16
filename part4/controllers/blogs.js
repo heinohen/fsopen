@@ -8,7 +8,7 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogRouter.post('/', (request, response, next) => {
+blogRouter.post('/', async (request, response, next) => {
   logger.info('täällä')
   const body = request.body
 
@@ -18,11 +18,27 @@ blogRouter.post('/', (request, response, next) => {
     url: body.url,
     likes: body.likes ? body.likes : 0
   })
-  blog.save()
-    .then(savedBlog => {
-      response.status(201).json(savedBlog)
-    })
-    .catch(error => next(error))
+  try {
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+    logger.info('save complete')
+
+  } catch (exception) {
+    next(exception)
+  }
 })
+
+blogRouter.delete('/:id', async (request, response, next) => {
+  logger.info('delete <----')
+
+  try {
+    await Blog.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } catch (exception) {
+    next(exception)
+  }
+
+})
+
 
 module.exports = blogRouter
