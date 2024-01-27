@@ -17,11 +17,11 @@ Rakennamme tämän osan tehtävissä blogilistasovellusta, jonka avulla käyttä
 - [x] 4.9 Tee testi, joka varmistaa että palautettujen blogien identifioivan kentän tulee olla nimeltään id. Oletusarvoisestihan tietokantaan talletettujen olioiden tunnistekenttä on _id. Olion kentän olemassaolon tarkastaminen onnistuu Jestin matcherillä toBeDefined.
 - [x] 4.10 Tee testi, joka varmistaa, että sovellukseen voi lisätä blogeja osoitteeseen /api/blogs tapahtuvalla HTTP POST ‑pyynnöllä. Testaa ainakin, että blogien määrä kasvaa yhdellä. Voit myös varmistaa, että oikeansisältöinen blogi on lisätty järjestelmään. Kun testi on valmis, refaktoroi operaatio käyttämään promisejen sijaan async/awaitia.
 - [x] 4.11* Tee testi, joka varmistaa, että jos kentälle likes ei anneta arvoa, asetetaan sen arvoksi 0. Muiden kenttien sisällöstä ei tässä tehtävässä vielä välitetä.
-- [ ] 4.12* Tee testit blogin lisäämiselle eli osoitteeseen /api/blogs tapahtuvalle HTTP POST ‑pyynnölle jotka varmistavat, että jos uusi blogi ei sisällä kenttää title tai kenttää url, pyyntöön vastataan statuskoodilla 400 Bad Request.
+- [x] 4.12* Tee testit blogin lisäämiselle eli osoitteeseen /api/blogs tapahtuvalle HTTP POST ‑pyynnölle jotka varmistavat, että jos uusi blogi ei sisällä kenttää title tai kenttää url, pyyntöön vastataan statuskoodilla 400 Bad Request.
 - [x] 4.13 blogilistan laajennus, step1
 Toteuta sovellukseen mahdollisuus yksittäisen blogin poistoon.
 Käytä async/awaitia. Noudata operaation HTTP-rajapinnan suhteen RESTful-käytänteitä.Toteuta ominaisuudelle myös testit.
-- [ ] 4.14* blogilistan laajennus, step2
+- [x] 4.14* blogilistan laajennus, step2
 Toteuta sovellukseen mahdollisuus yksittäisen blogin muokkaamiseen. Käytä async/awaitia.
-Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminnallisuuden voi toteuttaa samaan tapaan kuin muistiinpanon päivittäminen toteutettiin osassa 3.
-Toteuta ominaisuudelle myös testit.
+Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminnallisuuden voi toteuttaa samaan tapaan kuin muistiinpanon päivittäminen toteutettiin osassa 3. Toteuta ominaisuudelle myös testit.
+- [ ] 4.15: Tee sovellukseen mahdollisuus luoda käyttäjiä tekemällä HTTP POST -pyyntö osoitteeseen api/users. Käyttäjillä on käyttäjätunnus, salasana ja nimi. Tee järjestelmään myös mahdollisuus katsoa kaikkien käyttäjien tiedot sopivalla HTTP-pyynnöllä.

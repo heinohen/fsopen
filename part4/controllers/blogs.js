@@ -8,7 +8,7 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogRouter.post('/', async (request, response, next) => {
+blogRouter.post('/', async (request, response) => {
   logger.info('täällä')
   const body = request.body
 
@@ -18,27 +18,42 @@ blogRouter.post('/', async (request, response, next) => {
     url: body.url,
     likes: body.likes ? body.likes : 0
   })
-  try {
+
+  if (blog.title === undefined || blog.url === undefined) {
+    logger.info('hit')
+    response.status(400).end()
+  } else {
     const savedBlog = await blog.save()
     response.status(201).json(savedBlog)
-    logger.info('save complete')
-
-  } catch (exception) {
-    next(exception)
   }
+
 })
 
-blogRouter.delete('/:id', async (request, response, next) => {
+blogRouter.delete('/:id', async (request, response) => {
   logger.info('delete <----')
 
-  try {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
-  } catch (exception) {
-    next(exception)
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+})
+
+blogRouter.put('/:id', async (request, response) => {
+  const body = request.body
+
+  if (body.likes - 1 < 0) {
+    body.likes = 0
   }
 
+  const updatedBlog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
+  }
+
+  await Blog.findByIdAndUpdate(request.params.id, updatedBlog, { new: true })
+  response.json(updatedBlog)
 })
+
 
 
 module.exports = blogRouter
