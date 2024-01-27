@@ -5,6 +5,13 @@ const User = require('../models/user')
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
+  if (password === undefined) {
+    return response.status(400).send({ error: 'password undefined' })
+  } else if (password.length < 3) {
+    return response.status(400).send({ error: 'password too short (min. length 3)' })
+  }
+
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
@@ -15,13 +22,14 @@ usersRouter.post('/', async (request, response) => {
   })
 
   const savedUser = await user.save()
-
   response.status(201).json(savedUser)
+
 })
 
 usersRouter.get('/', async (request, response) => {
   const users = await User.find({})
   response.json(users)
 })
+
 
 module.exports = usersRouter
