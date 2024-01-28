@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhYWtheXR0YWphIiwiaWQiOiI2NWI2NGRlOWE5ZWI1NjY2YzY4NmI2NzkiLCJpYXQiOjE3MDY0NTkwMTcsImV4cCI6MTcwNjQ2MjYxN30.JRH-AHzSiPsemE7WtXsN9nyDEkKaT0HlTsi94LSD224
+
+{
+    "title": "kolmas blogi tokenilla refraktoroituna",
+    "author": "awefawefe",
+    "url": "4awefaw44",
+    "likes": 133,
+    "userID": "65b65563ac79627e9da475c3"
+}

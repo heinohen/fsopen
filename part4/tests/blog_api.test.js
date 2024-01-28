@@ -4,6 +4,10 @@ const app = require('../app')
 const helper = require('./api_test_helper')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
+
+
 
 
 
@@ -11,6 +15,39 @@ beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
 })
+
+let tokenHolder
+
+beforeEach(async () => {
+  await User.deleteMany({})
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash('salasana', saltRounds)
+
+  const user = new User({
+    username: 'testi',
+    name: 'testi testinen',
+    passwordHash,
+  })
+
+  await user.save()
+
+  //info about the test user
+  const testuser = {
+    username: 'testi',
+    password: 'salasana'
+  }
+
+  //log in with above
+  tokenHolder = await api // same as manual login, we obtain token to be send with requests
+    .post('/api/login')
+    .send(testuser)
+
+
+
+})
+
+
+
 
 describe('API tests', () => {
   test('blogs are returned as json', async () => {
@@ -49,8 +86,8 @@ describe('API tests', () => {
 
   describe('adding a blog', () => {
 
+    test('a valid blog can be added by token holder', async () => {
 
-    test('a valid blog can be added', async () => {
 
       const newBlog = {
         title: 'Dummy blog',
@@ -61,6 +98,7 @@ describe('API tests', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${tokenHolder.body.token}`) // this is from https://github.com/ladjs/supertest/issues/398
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -75,7 +113,31 @@ describe('API tests', () => {
       )
     })
 
+    test('a blog cannot be added without valid token', async () => {
+
+      const newBlog = {
+        title: 'Dummy blog',
+        author: 'Valid Author',
+        url: 'https://www.a-valid.url.com',
+        likes: 444
+      }
+
+
+      const tokenString = 'eyJ1c2VybmFtZSI6InBhYWtheXR0YWphIiwieyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.aWQiOiI2NWI2NGRlOWE5ZWI1NjY2YzY4NmI2NzkiLCJpYXQiOjE3MDY0NTgyMDEsImV4cCI6MTcwNjQ2MTgwMX0.3byMCEdbcOY9kCzkxwuT5G_jskpPtkxmGFDoqatixAQ'
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${tokenString}`)
+        .send(newBlog)
+        .expect(400) //return response.status(400).json({ error: 'token missing or invalid' })
+
+      const response = await api.get('/api/blogs')
+      expect(response.body).toHaveLength(helper.initialBlogs.length)
+
+    })
+
     test('a blog with undefined likes is added with 0 likes', async () => {
+
       const newBlog = {
         title: 'Dummy blog with no likes defined',
         author: 'No Likes Author',
@@ -84,6 +146,7 @@ describe('API tests', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${tokenHolder.body.token}`) // this is from https://github.com/ladjs/supertest/issues/398
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -105,6 +168,7 @@ describe('API tests', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${tokenHolder.body.token}`) // this is from https://github.com/ladjs/supertest/issues/398
         .send(newBlog)
         .expect(400)
 
@@ -126,6 +190,7 @@ describe('API tests', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${tokenHolder.body.token}`) // this is from https://github.com/ladjs/supertest/issues/398
         .send(aValidBlog)
         .expect(201)
 
@@ -134,6 +199,7 @@ describe('API tests', () => {
 
       await api
         .delete(`/api/blogs/${deleteThisBlog.id}`)
+        .set('Authorization', `Bearer ${tokenHolder.body.token}`) // this is from https://github.com/ladjs/supertest/issues/398
         .expect(204)
 
       const blogsAtTheEnd = await helper.blogsInDb()

@@ -42,6 +42,8 @@ const usersInDb = async () => {
   const users = await User.find({})
   return users.map(user => user.toJSON())
 }
+// inside module helper module to generate token for testobject
+
 
 
 module.exports = {
