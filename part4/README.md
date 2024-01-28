@@ -30,3 +30,4 @@ Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminn
 - [x] 4.18: Toteuta järjestelmään token-perustainen autentikointi
 - [x] 4.19: Muuta blogien lisäämistä siten, että se on mahdollista vain jos lisäyksen tekevässä HTTP POST -pyynnössä on mukana validi token. Tokenin haltija määritellään blogin lisääjäksi
 - [x] 4.20*: Refraktoroi tokenExtractor omaksi middlewareen
+- [x] 4.21*: Muuta blogin poistavaa operaatiota siten, että poisto onnistuu ainoastaan jos poisto-operaation tekijä (eli se kenen token on pyynnön mukana) on sama kuin blogin lisääjä.

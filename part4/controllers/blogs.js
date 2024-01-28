@@ -49,8 +49,35 @@ blogRouter.post('/', async (request, response) => {
 blogRouter.delete('/:id', async (request, response) => {
   logger.info('delete <----')
 
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!decodedToken.id) { return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+
+
+  //if no user field is present return token missing or invalid
+  if (!user) { return response.status(400).json({ error: '1 ) token missing or invalid' })}
+
+  const blog = await Blog.findById(request.params.id)
+  console.log(blog)
+
+  console.log('täällä asti')
+  console.log(`blog user ----> ${blog.user.toString()}, user user ${user.id.toString()}`)
+
+  if ( !(blog.user.toString() === user.id.toString()) ) { return response.status(400).json({ error: 'unauthorized' })}
+
+  await Blog.findByIdAndRemove(request.params.id)
+  //A 204 No Content status code indicates that the resource has been removed but there is no message body to further describe the action or the status.
+  response.status(204).end()
+
+
+
+
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
+
 })
 
 blogRouter.put('/:id', async (request, response) => {
