@@ -32,3 +32,4 @@ Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminn
 - [x] 4.20*: Refraktoroi tokenExtractor omaksi middlewareen
 - [x] 4.21*: Muuta blogin poistavaa operaatiota siten, että poisto onnistuu ainoastaan jos poisto-operaation tekijä (eli se kenen token on pyynnön mukana) on sama kuin blogin lisääjä.
 - [x] 4.22*: Tee nyt uusi middleware userExtractor joka selvittää pyyntöön liittyvän käyttäjän ja sijoittaa sen request-olioon.
+- [x] 4.23*: Korjaa testit. Tee myös testi, joka varmistaa että uuden blogin lisäys ei onnistu, ja pyyntö palauttaa oikean statuskoodin 401 Unauthorized jos pyynnön mukana ei ole tokenia.
