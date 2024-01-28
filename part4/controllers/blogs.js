@@ -1,6 +1,7 @@
 
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 
 blogRouter.get('/', async (request, response) => {
@@ -11,12 +12,16 @@ blogRouter.get('/', async (request, response) => {
 blogRouter.post('/', async (request, response) => {
   logger.info('täällä')
   const body = request.body
+  logger.info(body)
+  const user = await User.findById(request.body.userID)
 
+  logger.info(user)
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes ? body.likes : 0
+    likes: body.likes ? body.likes : 0,
+    user: user._id
   })
 
   if (blog.title === undefined || blog.url === undefined) {
@@ -24,6 +29,8 @@ blogRouter.post('/', async (request, response) => {
     response.status(400).end()
   } else {
     const savedBlog = await blog.save()
+    user.blogs = user.blogs.concat(savedBlog._id)
+    await user.save()
     response.status(201).json(savedBlog)
   }
 

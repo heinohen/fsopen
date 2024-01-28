@@ -26,3 +26,4 @@ Toteuta sovellukseen mahdollisuus yksittäisen blogin muokkaamiseen. Käytä asy
 Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminnallisuuden voi toteuttaa samaan tapaan kuin muistiinpanon päivittäminen toteutettiin osassa 3. Toteuta ominaisuudelle myös testit.
 - [x] 4.15: Tee sovellukseen mahdollisuus luoda käyttäjiä tekemällä HTTP POST -pyyntö osoitteeseen api/users. Käyttäjillä on käyttäjätunnus, salasana ja nimi. Tee järjestelmään myös mahdollisuus katsoa kaikkien käyttäjien tiedot sopivalla HTTP-pyynnöllä.
 - [x] 4.16*: Laajenna käyttäjätunnusten luomista siten, että käyttäjätunnuksen sekä salasanan tulee olla olemassa ja vähintään 3 merkkiä pitkä. Käyttäjätunnuksen on oltava järjestelmässä uniikki.
+- [x] 4.17: Laajenna blogia siten, että blogiin tulee tieto siitä lisänneestä käyttäjästä.
