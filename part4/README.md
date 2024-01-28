@@ -27,3 +27,6 @@ Tarvitsemme muokkausta lähinnä likejen lukumäärän päivittämiseen. Toiminn
 - [x] 4.15: Tee sovellukseen mahdollisuus luoda käyttäjiä tekemällä HTTP POST -pyyntö osoitteeseen api/users. Käyttäjillä on käyttäjätunnus, salasana ja nimi. Tee järjestelmään myös mahdollisuus katsoa kaikkien käyttäjien tiedot sopivalla HTTP-pyynnöllä.
 - [x] 4.16*: Laajenna käyttäjätunnusten luomista siten, että käyttäjätunnuksen sekä salasanan tulee olla olemassa ja vähintään 3 merkkiä pitkä. Käyttäjätunnuksen on oltava järjestelmässä uniikki.
 - [x] 4.17: Laajenna blogia siten, että blogiin tulee tieto siitä lisänneestä käyttäjästä.
+- [x] 4.18: Toteuta järjestelmään token-perustainen autentikointi
+- [x] 4.19: Muuta blogien lisäämistä siten, että se on mahdollista vain jos lisäyksen tekevässä HTTP POST -pyynnössä on mukana validi token. Tokenin haltija määritellään blogin lisääjäksi
+- [x] 4.20*: Refraktoroi tokenExtractor omaksi middlewareen
